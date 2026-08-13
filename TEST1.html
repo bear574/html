@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>BEARtest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: pixelated;
+        }
+
+        body {
+            background: #0a0f0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', 'VT323', monospace;
+            padding: 20px;
+        }
+
+        /* основной контейнер — пиксельная рамка */
+        .pixel-box {
+            background: #030703;
+            border: 4px solid #1e4d2e;
+            box-shadow: 8px 8px 0 #0a2b14;
+            max-width: 780px;
+            width: 100%;
+            padding: 24px 20px 28px;
+            transition: all 0.1s step-end;
+        }
+
+        /* текстовые стили */
+        .pixel-title {
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            text-align: center;
+            color: #7bcb5e;
+            text-shadow: 4px 4px 0 #1e4620;
+            word-break: keep-all;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pixel-text {
+            color: #9ed989;
+            font-size: 18px;
+            line-height: 1.4;
+            text-shadow: 1px 1px 0 #0f2a0a;
+        }
+
+        .pixel-btn {
+            background: #0e2a14;
+            border: 3px solid #3f8a4c;
+            color: #bfffa3;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 24px;
+            padding: 12px 24px;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 #051a08;
+            transition: 0.05s linear;
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #051a08;
+        }
+
+        .pixel-btn.small {
+            font-size: 18px;
+            padding: 8px 20px;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        /* загрузочный экран */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 40px 20px;
+        }
+        .loading-dots {
+            font-size: 32px;
+            letter-spacing: 8px;
+            color: #62b34b;
+        }
+
+        /* карточка вопроса */
+        .question-area {
+            margin: 20px 0 20px;
+        }
+        .q-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dotted #2b6e3c;
+            padding-bottom: 10px;
+            margin-bottom: 24px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #b0f094;
+        }
+        .question-text {
+            font-size: 26px;
+            font-weight: bold;
+            color: #d2ffb0;
+            margin-bottom: 32px;
+            line-height: 1.3;
+            text-transform: uppercase;
+            border-left: 8px solid #3e9f51;
+            padding-left: 16px;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+        .option-item {
+            background: #0e1d12;
+            border: 2px solid #2c6a38;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: 0.05s linear;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 18px;
+            color: #bef5a1;
+        }
+        .option-item.selected {
+            background: #1e3f26;
+            border-color: #6ecf7a;
+            box-shadow: inset 0 0 0 1px #94e2a0;
+        }
+        .option-prefix {
+            font-weight: bold;
+            background: #1a3a1f;
+            padding: 4px 12px;
+            border: 1px solid #468a4e;
+            font-size: 20px;
+        }
+        .option-weight {
+            margin-left: auto;
+            font-family: monospace;
+            background: #041007;
+            padding: 4px 10px;
+            font-size: 14px;
+            color: #86cc6e;
+        }
+        .next-btn-wrapper {
+            text-align: right;
+        }
+
+        /* прогресс бар */
+        .progress-section {
+            margin-top: 28px;
+            border-top: 2px solid #235f2e;
+            padding-top: 18px;
+        }
+        .progress-label {
+            font-size: 14px;
+            color: #82bd6e;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+        .progress-bar-bg {
+            background: #102313;
+            height: 20px;
+            border: 2px solid #2a6a38;
+            padding: 2px;
+        }
+        .progress-fill {
+            background: #5bbd48;
+            width: 0%;
+            height: 100%;
+            transition: width 0.2s step-end;
+        }
+
+        /* результат */
+        .result-box {
+            margin: 24px 0;
+            padding: 20px;
+            background: #0c1a0e;
+            border: 3px solid #3d8a45;
+        }
+        .result-sum {
+            font-size: 28px;
+            font-weight: bold;
+            color: #c6ffa3;
+            margin: 16px 0;
+        }
+        .result-desc {
+            font-size: 20px;
+            line-height: 1.4;
+            margin: 16px 0;
+        }
+        .action-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer-note {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 24px;
+            color: #3c6e3a;
+        }
+
+        @media (max-width: 600px) {
+            .pixel-box {
+                padding: 16px;
+            }
+            .question-text {
+                font-size: 20px;
+            }
+            .option-item {
+                font-size: 14px;
+                flex-wrap: wrap;
+            }
+            .pixel-btn {
+                font-size: 20px;
+                padding: 8px 18px;
+            }
+        }/* ===== УСИЛЕНИЕ ТЕКСТА РЕЗУЛЬТАТА ===== */
+.result-box .pixel-title {
+    font-weight: 900;          /* максимальная жирность */
+    font-size: 38px;           /* чуть крупнее */
+    letter-spacing: 3px;
+    text-shadow: 4px 4px 0 #0a3b12; /* более плотная тень */
+    color: #e2ffb0;            /* ярче, чем обычный зелёный */
+}
+
+.result-sum {
+    font-weight: 800;
+    font-size: 28px;
+    background: #0e2412;
+    display: inline-block;
+    padding: 8px 20px;
+    border: 2px solid #6ecf7a;
+    letter-spacing: 1px;
+    color: #f0ffc0;
+    text-shadow: 2px 2px 0 #1e4a20;
+}
+
+.result-desc {
+    font-weight: bold;
+    font-size: 22px;           /* увеличенный размер */
+    line-height: 1.5;
+    background: #071e0b;
+    padding: 14px;
+    border-left: 8px solid #6ecf7a;
+    color: #d6ffb0;
+    text-shadow: 1px 1px 0 #173318;
+    letter-spacing: 0.5px;
+}
+
+/* дополнительно — если хотите сделать жирнее и варианты ответов в процессе теста */
+.option-item {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.question-text {
+    font-weight: 800;
+    font-size: 28px;
+    text-shadow: 2px 2px 0 #132d14;
+}
+    </style>
+</head>
+<body>
+<div class="pixel-box" id="appRoot">
+    <!-- динамические экраны будут здесь -->
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // ДАННЫЕ ТЕСТА: 10 вопросов, каждый с 4 вариантами [текст, вес]
+    // --------------------------------------------------------------
+    const QUESTIONS = [
+        { text: "Кто тебе нравится", options: [
+            ["Девочки", 1],
+            ["Парни", 2],
+            ["Чипсы", 3],
+            ["Мальчики/Девочки", 4]
+        ]},
+        { text: "Куда пойдете", options: [
+            ["Бар", 1],
+            ["К ней/нему", 2],
+            ["К тебе", 3],
+            ["К ней", 4]
+        ]},
+        { text: "Что будете делать", options: [
+            ["Смотреть фильм", 1],
+            ["Ирать", 2],
+            ["18+", 3],
+            ["Бля акно ахуенное", 4]
+        ]},
+        { text: "Какой характер выбиреш", options: [
+            ["Спокойный", 1],
+            ["Не спакойный", 2],
+            ["Злой", 3],
+            ["Сухарик", 4]
+        ]},
+        { text: "Хочеш", options: [
+            ["На раз", 1],
+            ["Отножений", 2],
+            ["К Эпштейну", 3],
+            ["К Мише❤️", 4]
+        ]},
+        { text: "lav еда", options: [
+            ["Роллы", 1],
+            ["Пица", 2],
+            ["Бургер", 3],
+            ["Сухарик", 4]
+        ]},
+        { text: "Что хочеш", options: [
+            ["Сися", 1],
+            ["Пися", 2],
+            ["Жопа", 3],
+            ["Пизда", 4]
+        ]},
+        { text: "Трек", options: [
+            ["Последняя Любовь", 2],
+            ["Цветок", 1],
+            ["ПОВОД", 3],
+            [" ПУСТОЙ ВОКЗАЛ", 4]
+        ]},
+        { text: "Вид", options: [
+            ["Нормис", 1],
+            ["femboy", 2],
+            ["Альтушка", 3],
+            ["Чемадан", 4]
+        ]},
+        { text: "Стран проживания", options: [
+            ["СССР", 1],
+            ["Россия", 2],
+            ["American", 3],
+            ["Китай", 4]
+        ]}
+        
+    ];
+
+    // DOM элементы будут монтироваться в #appRoot
+    let currentQuestionIndex = 0;      // 0-based
+    let totalScore = 0;
+    let selectedWeightForCurrent = null;   // вес выбранного варианта на текущем вопросе
+    let testInProgress = false;          // флаг, что тест активен (между вопросами)
+
+    // вспомогательная функция для перерисовки экрана
+    const app = document.getElementById('appRoot');
+
+    // --------------------------------------------------------------
+    // ЭКРАН ЗАСТАВКИ
+    function renderSplash() {
+        app.innerHTML = `
+            <div class="center">
+                <div class="pixel-title">BEARtest</div>
+                <div class="pixel-text" style="margin: 16px 0 32px;">Боль и унижения<br>ОПРЕДЕЛИ СЕБЯ</div>
+                <button class="pixel-btn" id="startBtn">НАЧАТЬ</button>
+                <div class="footer-note">[ 10 вопросов / 4 варианта ]</div>
+            </div>
+        `;
+        const startBtn = document.getElementById('startBtn');
+        if (startBtn) startBtn.addEventListener('click', () => showLoading());
+    }
+
+    // --------------------------------------------------------------
+    // ЗАГРУЗКА 2-3 секунды
+    function showLoading() {
+        app.innerHTML = `
+            <div class="loading">
+                <div class="pixel-title" style="font-size: 28px;">ЗАГРУЗКА</div>
+                <div class="loading-dots" id="loadingDots">.</div>
+                <div class="pixel-text">ИНИЦИАЛИЗАЦИЯ ТЕСТА BEAR...</div>
+            </div>
+        `;
+        let dotCount = 1;
+        const dotsEl = document.getElementById('loadingDots');
+        const interval = setInterval(() => {
+            if (dotsEl) {
+                dotCount = (dotCount % 3) + 1;
+                dotsEl.innerText = '.'.repeat(dotCount);
+            }
+        }, 400);
+        // случайная задержка 2000-3000 мс
+        const delay = 2000 + Math.random() * 1000;
+        setTimeout(() => {
+            clearInterval(interval);
+            // сброс состояния теста
+            currentQuestionIndex = 0;
+            totalScore = 0;
+            selectedWeightForCurrent = null;
+            testInProgress = true;
+            renderCurrentQuestion();
+        }, delay);
+    }
+
+    // --------------------------------------------------------------
+    // ОТРИСОВКА ТЕКУЩЕГО ВОПРОСА (по индексу)
+    function renderCurrentQuestion() {
+        if (!testInProgress) return;
+        if (currentQuestionIndex >= QUESTIONS.length) {
+            // тест завершён, показать результат
+            finishTestAndShowResult();
+            return;
+        }
+        const q = QUESTIONS[currentQuestionIndex];
+        const qNumber = currentQuestionIndex + 1;
+        // строим варианты
+        let optionsHtml = '';
+        q.options.forEach((opt, idx) => {
+            const optText = opt[0];
+            const weight = opt[1];
+            const isSelected = (selectedWeightForCurrent !== null && selectedWeightForCurrent === weight);
+            const selectedClass = isSelected ? 'selected' : '';
+            optionsHtml += `
+                <div class="option-item ${selectedClass}" data-weight="${weight}" data-opt-index="${idx}">
+                    <span class="option-prefix">${String.fromCharCode(65+idx)}</span>
+                    <span>${optText}</span>
+                    <span class="option-weight">ВЕС: ${weight}</span>
+                </div>
+            `;
+        });
+
+        const progressPercent = ((currentQuestionIndex) / QUESTIONS.length) * 100;
+
+        app.innerHTML = `
+            <div class="question-area">
+                <div class="q-header">
+                    <span>ВОПРОС ${qNumber} / ${QUESTIONS.length}</span>
+                    <span>НАКОПЛЕНО: ${totalScore} Б.</span>
+                </div>
+                <div class="question-text">${q.text}</div>
+                <div class="options-list" id="optionsContainer">
+                    ${optionsHtml}
+                </div>
+                <div class="next-btn-wrapper">
+                    <button class="pixel-btn small" id="nextBtn" disabled>ДАЛЬШЕ</button>
+                </div>
+            </div>
+            <div class="progress-section">
+                <div class="progress-label">ПРОГРЕСС ТЕСТА</div>
+                <div class="progress-bar-bg">
+                    <div class="progress-fill" style="width: ${progressPercent}%;"></div>
+                </div>
+            </div>
+            <div class="footer-note">ВЫБЕРИ ОТВЕТ → НАЖМИ ДАЛЬШЕ</div>
+        `;
+
+        // добавить слушатели на варианты
+        const optionsDivs = document.querySelectorAll('.option-item');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        function updateSelection(weight, element) {
+            // снимаем выделение со всех
+            optionsDivs.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedWeightForCurrent = weight;
+            if (nextBtn) nextBtn.disabled = false;
+        }
+
+        optionsDivs.forEach(optDiv => {
+            const weightVal = parseInt(optDiv.dataset.weight, 10);
+            optDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                updateSelection(weightVal, optDiv);
+            });
+        });
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (selectedWeightForCurrent !== null) {
+                    // добавляем вес в сумму
+                    totalScore += selectedWeightForCurrent;
+                    // переход к следующему вопросу
+                    currentQuestionIndex++;
+                    selectedWeightForCurrent = null;
+                    if (currentQuestionIndex < QUESTIONS.length) {
+                        renderCurrentQuestion();
+                    } else {
+                        finishTestAndShowResult();
+                    }
+                }
+            });
+        }
+    }
+
+    // --------------------------------------------------------------
+    // ФИНАЛ: ПОКАЗАТЬ РЕЗУЛЬТАТ ПО СУММЕ
+    function finishTestAndShowResult() {
+        testInProgress = false;
+        const finalScore = totalScore;
+        let resultTitle = "";
+        let resultDescription = "";
+
+        if (finalScore >= 10 && finalScore <= 20) {
+            resultTitle = "Гейчик";
+            resultDescription = "Ура ты как я";
+        } else if (finalScore >= 21 && finalScore <= 25) {
+            resultTitle = "Гейчик";
+            resultDescription = "Ура ты как я";
+        } else if (finalScore >= 26 && finalScore <= 30) {
+            resultTitle = "B";
+            resultDescription = "Не B а BEAR илиже Bearas";
+        } else if (finalScore >= 31 && finalScore <= 35) {
+            resultTitle = "Сухарик";
+            resultDescription = "Во во сухарик";
+        } else if (finalScore >= 36 && finalScore <= 40) {
+            resultTitle = "Похуй";
+            resultDescription = "Ура мне лень писать И писать";
+        } else {
+            resultTitle = "Сколько можно";
+            resultDescription = "Почему я это сделал тут 1000 и 1 врянт ";
+        }
+
+        app.innerHTML = `
+            <div class="result-box">
+                <div class="pixel-title" style="font-size: 32px;">ИТОГ ТЕСТА</div>
+                <div class="result-sum">СУММА БАЛЛОВ: ${finalScore} / 40</div>
+                <div class="result-desc">${resultTitle}</div>
+                <div class="result-desc" style="font-size: 16px;">${resultDescription}</div>
+                <div class="action-row">
+                    <button class="pixel-btn small" id="restartBtn">ЗАНОВО</button>
+                    <button class="pixel-btn small" id="exitBtn">ВЫХОД</button>
+                </div>
+            </div>
+            <div class="footer-note"> I Gay | BEAR TEST</div>
+        `;
+        const restartBtn = document.getElementById('restartBtn');
+        const exitBtn = document.getElementById('exitBtn');
+        if (restartBtn) restartBtn.addEventListener('click', () => { resetToSplash(); });
+        if (exitBtn) exitBtn.addEventListener('click', () => { resetToSplash(); });
+    }
+
+    function resetToSplash() {
+        // полный сброс всех состояний
+        testInProgress = false;
+        currentQuestionIndex = 0;
+        totalScore = 0;
+        selectedWeightForCurrent = null;
+        renderSplash();
+    }
+
+    // --------------------------------------------------------------
+    // СТАРТ
+    renderSplash();
+</script>
+</body>
+</html>

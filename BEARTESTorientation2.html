@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ориентация и влечение | Балловая система</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #d9d2e9;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 1.5rem 1rem;
+            color: #1a1e2b;
+        }
+
+        .test-container {
+            max-width: 780px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 1.8rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 1px solid #2c2f3c;
+        }
+
+        .header {
+            background: #1f232e;
+            padding: 1.2rem 2rem;
+            border-bottom: 3px solid #ffb347;
+        }
+
+        .header h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            margin-bottom: 0.2rem;
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #cbd5e6;
+        }
+
+        .gender-section {
+            background: #f4f6fc;
+            padding: 0.9rem 2rem;
+            border-bottom: 2px solid #d0d7e8;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .gender-label {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        select {
+            background: #ffffff;
+            border: 2px solid #3b3f4e;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #0f172a;
+            cursor: pointer;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        select:focus {
+            border-color: #ff914d;
+            box-shadow: 0 0 0 2px rgba(255, 145, 77, 0.3);
+        }
+
+        .quiz-area {
+            padding: 2rem;
+            background: #ffffff;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.8rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2c3e66;
+            background: #eef2fa;
+            padding: 0.6rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid #cbd5e1;
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 2rem;
+            color: #0b1120;
+            border-left: 5px solid #ff914d;
+            padding-left: 1rem;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .option-item {
+            background: #fefefe;
+            border: 2px solid #cbd5e1;
+            border-radius: 1rem;
+            padding: 0.9rem 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .option-item:hover {
+            background: #fff2e6;
+            border-color: #ff914d;
+            transform: translateX(4px);
+        }
+
+        .option-item.selected {
+            background: #eef2ff;
+            border-color: #1e293b;
+            border-width: 2px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .option-radio {
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: #2c3e66;
+            margin: 0;
+            pointer-events: none;
+        }
+
+        .option-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1f2a44;
+            flex: 1;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2.2rem;
+            gap: 1rem;
+        }
+
+        button {
+            background: #edf2f7;
+            border: 2px solid #94a3b8;
+            padding: 0.7rem 1.7rem;
+            border-radius: 2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+            transition: 0.2s;
+            min-width: 110px;
+        }
+
+        button.primary {
+            background: #1f2a3e;
+            border-color: #0f172a;
+            color: white;
+        }
+
+        button.primary:hover {
+            background: #2d3a52;
+            border-color: #ff914d;
+        }
+
+        button:hover:not(:disabled) {
+            background: #e2e8f0;
+            transform: scale(0.97);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-area {
+            padding: 1.8rem 2rem 2rem 2rem;
+            background: #ffffff;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .result-card {
+            background: #fafcff;
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            border: 2px solid #1e293b;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-score {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0b1120;
+            margin-bottom: 0.75rem;
+            background: #eef2ff;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 3rem;
+        }
+
+        .result-sub {
+            color: #2d3a5e;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ff914d;
+            padding-left: 1rem;
+            font-weight: 500;
+        }
+
+        .official-tag {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #0f172a;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            border-radius: 2rem;
+            margin: 0.75rem 0;
+            border: 1px solid #94a3b8;
+        }
+
+        .stat-line {
+            background: #f1f5f9;
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+            font-weight: 500;
+            border-left: 4px solid #2c3e66;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.8rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .share-buttons button {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .share-buttons button.wa {
+            border-color: #25D366;
+            color: #075E54;
+        }
+        .share-buttons button.vk {
+            border-color: #2787F5;
+            color: #1e6fbf;
+        }
+        .share-buttons button.tg {
+            border-color: #26A5E4;
+            color: #1e88c9;
+        }
+        .share-buttons button.copy {
+            border-color: #4b5563;
+            color: #1f2937;
+        }
+        .share-buttons button:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+
+        hr {
+            margin: 1rem 0;
+            border: none;
+            border-top: 2px solid #dce3ec;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+            border: 1px solid #ffb347;
+        }
+
+        @media (max-width: 550px) {
+            .quiz-area {
+                padding: 1.2rem;
+            }
+            .question-text {
+                font-size: 1.1rem;
+            }
+            .option-item {
+                padding: 0.7rem 1rem;
+            }
+            button {
+                padding: 0.5rem 1rem;
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="test-container" id="app">
+    <div class="header">
+        <h1>Ориентация и влечение</h1>
+        <p>20 вопросов · балловая система · детальный разбор</p>
+    </div>
+    <div class="gender-section">
+        <span class="gender-label">Ваш пол (для контекста)</span>
+        <select id="genderSelect">
+            <option value="female">Женский</option>
+            <option value="male">Мужской</option>
+            <option value="nonbinary">Небинарный / другой</option>
+        </select>
+    </div>
+    <div id="mainContent"></div>
+</div>
+<div id="toast" class="toast-msg"></div>
+
+<script>
+    // ---------- ВОПРОСЫ С УНИКАЛЬНЫМИ ОТВЕТАМИ (20 шт) ----------
+    const questionsData = [
+        { text: "Кто вызывает у вас спонтанный романтический интерес при первой встрече?", type: "orient", answers: [{ label: "Всегда человек противоположного пола", value: 0 },{ label: "Чаще противоположный пол, но бывают исключения", value: 25 },{ label: "Люди любого пола с одинаковой вероятностью", value: 50 },{ label: "Чаще люди того же пола, что и я", value: 75 },{ label: "Исключительно люди моего пола", value: 100 }] },
+        { text: "В ваших сексуальных фантазиях обычно фигурируют:", type: "orient", answers: [{ label: "Только партнёры противоположного пола", value: 0 },{ label: "Преимущественно противоположный пол", value: 25 },{ label: "С одинаковой частотой оба пола", value: 50 },{ label: "Чаще люди того же пола", value: 75 },{ label: "Всегда люди, принадлежащие к моему полу", value: 100 }] },
+        { text: "Вы смотрите фильм с любовной линией. Какая пара вызывает у вас больший отклик?", type: "orient", answers: [{ label: "Гетеросексуальная пара (М+Ж)", value: 0 },{ label: "Скорее гетеро, но я понимаю и однополые", value: 25 },{ label: "И гетеро, и однополые одинаково трогательны", value: 50 },{ label: "Однополые пары вызывают больше эмоций", value: 75 },{ label: "Только однополые отношения", value: 100 }] },
+        { text: "Представьте свидание вслепую. Кого бы вы хотели там увидеть?", type: "orient", answers: [{ label: "Человека противоположного пола", value: 0 },{ label: "Скорее противоположного, но допускаю эксперимент", value: 25 },{ label: "Без разницы, пол не важен", value: 50 },{ label: "Человека того же пола, что я", value: 75 },{ label: "Исключительно своего пола", value: 100 }] },
+        { text: "Оцените, кто чаще оказывается объектом ваших романтических грёз?", type: "orient", answers: [{ label: "Люди другого пола", value: 0 },{ label: "В основном другой пол", value: 25 },{ label: "Оба пола примерно поровну", value: 50 },{ label: "В основном такой же, как мой", value: 75 },{ label: "Всегда моего пола", value: 100 }] },
+        { text: "Эстетическая привлекательность: кто чаще приковывает ваш взгляд?", type: "orient", answers: [{ label: "Противоположный пол", value: 0 },{ label: "В основном противоположный", value: 25 },{ label: "Равно привлекательны оба", value: 50 },{ label: "Чаще люди моего пола", value: 75 },{ label: "Всегда только люди моего пола", value: 100 }] },
+        { text: "Если думать об идеальном партнёре для серьёзных отношений, то это:", type: "orient", answers: [{ label: "Человек другого пола", value: 0 },{ label: "Склоняюсь к другому полу", value: 25 },{ label: "Пол не имеет значения", value: 50 },{ label: "Человек моего пола", value: 75 },{ label: "Только моего пола", value: 100 }] },
+        { text: "Кто вызывает у вас желание флиртовать или завязать общение?", type: "orient", answers: [{ label: "Исключительно противоположный пол", value: 0 },{ label: "Чаще противоположный, иногда свой", value: 25 },{ label: "Все люди, независимо от пола", value: 50 },{ label: "В основном люди моего пола", value: 75 },{ label: "Только мой пол", value: 100 }] },
+        { text: "Спонтанное чувство «бабочек в животе» возникает у вас при общении с:", type: "orient", answers: [{ label: "Людьми другого пола", value: 0 },{ label: "В основном с противоположным полом", value: 25 },{ label: "Без разницы, эмоция не зависит от пола", value: 50 },{ label: "Чаще с теми, у кого мой же пол", value: 75 },{ label: "Всегда с моим полом", value: 100 }] },
+        { text: "Для вас наиболее естественная пара для близких дружеско-романтических отношений:", type: "orient", answers: [{ label: "Мужчина + женщина", value: 0 },{ label: "Скорее классическая пара, но не только", value: 25 },{ label: "Любые гендерные сочетания", value: 50 },{ label: "Однополая пара", value: 75 },{ label: "Только однополый союз", value: 100 }] },
+        { text: "Какие любовные сцены в книгах вызывают у вас больше отклика?", type: "orient", answers: [{ label: "Гетеросексуальные", value: 0 },{ label: "В основном гетеро", value: 25 },{ label: "Любые, если есть химия", value: 50 },{ label: "Между персонажами одного пола", value: 75 },{ label: "Только однополые", value: 100 }] },
+        { text: "Когда вы представляете совместное будущее, ваш партнёр — это человек:", type: "orient", answers: [{ label: "Противоположного пола", value: 0 },{ label: "Скорее другого пола", value: 25 },{ label: "Гендер не важен, главное — личность", value: 50 },{ label: "Того же пола, что и я", value: 75 },{ label: "Исключительно моего пола", value: 100 }] },
+        { text: "Как часто вы испытываете романтическое влечение к кому-то из своего пола?", type: "orient", answers: [{ label: "Никогда", value: 0 },{ label: "Очень редко", value: 25 },{ label: "Иногда / в равной степени с другим полом", value: 50 },{ label: "Довольно часто", value: 75 },{ label: "Почти всегда / исключительно к своему полу", value: 100 }] },
+        { text: "Какая динамика в паре вам кажется наиболее привлекательной?", type: "orient", answers: [{ label: "Традиционная разнополая", value: 0 },{ label: "С уклоном к разнополой", value: 25 },{ label: "Любой формат", value: 50 },{ label: "Предпочитаю однополую", value: 75 },{ label: "Исключительно однополые отношения", value: 100 }] },
+        { text: "Ваше глубинное, не зависящее от стереотипов, влечение направлено на:", type: "orient", answers: [{ label: "Только противоположный пол", value: 0 },{ label: "В основном противоположный пол", value: 25 },{ label: "Оба пола равнозначно", value: 50 },{ label: "В основном мой пол", value: 75 },{ label: "Только мой пол", value: 100 }] },
+        { text: "Если бы вы могли выбирать, с кем проснуться утром в романтическом контексте - это был бы человек:", type: "orient", answers: [{ label: "Противоположного пола", value: 0 },{ label: "Скорее противоположного пола", value: 25 },{ label: "Любого, пол не важен", value: 50 },{ label: "Моего пола", value: 75 },{ label: "Только моего пола", value: 100 }] },
+        { text: "Как часто вы испытываете сексуальное желание к реальным людям (не абстрактно)?", type: "intensity", answers: [{ label: "Никогда или почти никогда", value: 0 },{ label: "Редко (раз в месяц или реже)", value: 1 },{ label: "Иногда (несколько раз в месяц)", value: 2 },{ label: "Часто (несколько раз в неделю)", value: 3 },{ label: "Очень часто (почти ежедневно)", value: 4 }] },
+        { text: "Сила вашего романтического влечения (насколько оно вас захватывает):", type: "intensity", answers: [{ label: "Очень слабая, практически отсутствует", value: 0 },{ label: "Слабая, редко заставляет действовать", value: 1 },{ label: "Умеренная, периодически возникает", value: 2 },{ label: "Сильная, заметно влияет на настроение", value: 3 },{ label: "Очень сильная, часто занимает мысли", value: 4 }] },
+        { text: "Частота появления интимных или романтических фантазий:", type: "intensity", answers: [{ label: "Никогда", value: 0 },{ label: "Очень редко, пару раз в год", value: 1 },{ label: "Иногда (раз в 1-2 недели)", value: 2 },{ label: "Довольно часто (несколько раз в неделю)", value: 3 },{ label: "Постоянно, каждый день", value: 4 }] },
+        { text: "Как часто вы ощущаете эмоциональную и физическую тягу к другим людям?", type: "intensity", answers: [{ label: "Практически никогда", value: 0 },{ label: "Редко, эпизодически", value: 1 },{ label: "Средне, периодически", value: 2 },{ label: "Часто, несколько раз в неделю", value: 3 },{ label: "Очень часто, ежедневно", value: 4 }] }
+    ];
+
+    let userResponses = new Array(20).fill(null);
+    let currentStep = 0;
+    let testFinished = false;
+
+    const mainDiv = document.getElementById('mainContent');
+    const genderSelect = document.getElementById('genderSelect');
+    const toastEl = document.getElementById('toast');
+
+    function showToast(msg, duration = 1700) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.style.opacity = '1';
+        setTimeout(() => toastEl.style.opacity = '0', duration);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function renderQuestion() {
+        if (testFinished) return;
+        const q = questionsData[currentStep];
+        const options = q.answers;
+        const currentAnswer = userResponses[currentStep];
+
+        let optionsHtml = '';
+        options.forEach((opt, idx) => {
+            const isSelected = (currentAnswer !== null && currentAnswer === opt.value);
+            const selectedClass = isSelected ? 'selected' : '';
+            optionsHtml += `
+                <div class="option-item ${selectedClass}" data-value="${opt.value}">
+                    <input type="radio" name="qOption" value="${opt.value}" id="opt_${idx}" ${isSelected ? 'checked' : ''} class="option-radio">
+                    <label class="option-label" for="opt_${idx}">${escapeHtml(opt.label)}</label>
+                </div>
+            `;
+        });
+
+        const total = questionsData.length;
+        const answeredCount = userResponses.filter(v => v !== null).length;
+        const html = `
+            <div class="quiz-area">
+                <div class="progress">
+                    <span>Вопрос ${currentStep+1} из ${total}</span>
+                    <span>Отвечено: ${answeredCount}/${total}</span>
+                </div>
+                <div class="question-text">${escapeHtml(q.text)}</div>
+                <div class="options-list" id="optionsContainer">
+                    ${optionsHtml}
+                </div>
+                <div class="nav-buttons">
+                    <button id="prevBtn" ${currentStep === 0 ? 'disabled' : ''}>Назад</button>
+                    <button id="nextBtn" class="primary">${currentStep === total-1 ? 'Завершить' : 'Далее'}</button>
+                </div>
+            </div>
+        `;
+        mainDiv.innerHTML = html;
+
+        const optionItems = document.querySelectorAll('.option-item');
+        optionItems.forEach(item => {
+            const radio = item.querySelector('input[type="radio"]');
+            if (!radio) return;
+            item.addEventListener('click', (e) => {
+                if (!radio.checked) {
+                    radio.checked = true;
+                    const changeEv = new Event('change', { bubbles: true });
+                    radio.dispatchEvent(changeEv);
+                }
+                document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+                item.classList.add('selected');
+            });
+            radio.addEventListener('change', (e) => {
+                const val = parseFloat(e.target.value);
+                userResponses[currentStep] = val;
+                document.querySelectorAll('.option-item').forEach(el => {
+                    const r = el.querySelector('input');
+                    if (r && r.checked) el.classList.add('selected');
+                    else el.classList.remove('selected');
+                });
+            });
+            if (radio.checked) item.classList.add('selected');
+        });
+
+        document.getElementById('prevBtn')?.addEventListener('click', () => { if (currentStep > 0) { currentStep--; renderQuestion(); } });
+        document.getElementById('nextBtn')?.addEventListener('click', () => {
+            if (userResponses[currentStep] === null) {
+                showToast('Выберите вариант ответа', 1200);
+                return;
+            }
+            if (currentStep === total-1) {
+                const allAnswered = userResponses.every(v => v !== null);
+                if (!allAnswered) {
+                    showToast(`Осталось ответить на ${userResponses.filter(v => v === null).length} вопросов`, 1500);
+                    return;
+                }
+                finishTest();
+            } else {
+                currentStep++;
+                renderQuestion();
+            }
+        });
+    }
+
+    function finishTest() {
+        testFinished = true;
+        const orientScores = userResponses.slice(0, 16);
+        const intensityScores = userResponses.slice(16, 20);
+        const avgOrient = orientScores.reduce((a,b)=>a+b,0)/orientScores.length;
+        const totalScore = Math.round(avgOrient);
+        const avgIntensity = intensityScores.reduce((a,b)=>a+b,0)/intensityScores.length;
+        const gender = genderSelect.value;
+
+        let orientationLabel = "", officialShort = "", predispositionBase = "";
+        if (totalScore <= 12) { orientationLabel = "Исключительно гетеросексуальная направленность"; officialShort = "Гетеросексуал(ка)"; predispositionBase = "сильное влечение к противоположному полу"; }
+        else if (totalScore <= 28) { orientationLabel = "Гетерофлексибильность"; officialShort = "Гетерофлексибил"; predispositionBase = "преимущественно гетеро, но допускает исключения"; }
+        else if (totalScore <= 45) { orientationLabel = "Бисексуальность с гетеро-уклоном"; officialShort = "Бисексуал(ка) (уклон к гетеро)"; predispositionBase = "оба пола привлекают, но противоположный сильнее"; }
+        else if (totalScore <= 58) { orientationLabel = "Сбалансированная бисексуальность"; officialShort = "Бисексуал(ка)"; predispositionBase = "равное влечение к обоим полам"; }
+        else if (totalScore <= 75) { orientationLabel = "Бисексуальность с гомо-уклоном"; officialShort = "Бисексуал(ка) (уклон к гомо)"; predispositionBase = "оба пола привлекают, но свой пол — чаще"; }
+        else if (totalScore <= 88) { orientationLabel = "Гомофлексибильность"; officialShort = "Гомофлексибил"; predispositionBase = "преимущественно гомосексуальное влечение"; }
+        else { orientationLabel = "Исключительно гомосексуальная направленность"; officialShort = "Гомосексуал(ка)"; predispositionBase = "стойкое влечение только к своему полу"; }
+
+        if (gender === "nonbinary") officialShort += " (небинарный контекст)";
+
+        let intensityDesc = "", aceNote = "";
+        if (avgIntensity <= 1.0) { intensityDesc = "Очень низкая частота"; aceNote = "Вы можете находиться в асексуальном/аромантическом спектре."; }
+        else if (avgIntensity <= 2.0) { intensityDesc = "Пониженная частота"; aceNote = "Возможна принадлежность к серо-асексуальному спектру."; }
+        else if (avgIntensity <= 3.2) { intensityDesc = "Умеренная интенсивность"; aceNote = "Типичный уровень влечения."; }
+        else { intensityDesc = "Высокая интенсивность"; aceNote = "Выраженное либидо и эмоциональная вовлеченность."; }
+
+        const predispositionFull = `${predispositionBase}. Балл: ${totalScore} из 100. ${intensityDesc}.`;
+        let statMsg = "";
+        if (totalScore <= 12) statMsg = "Около 65-70% населения имеют схожий паттерн (гетеро)";
+        else if (totalScore <= 28) statMsg = "Примерно 8-12% людей — гетерофлексибилы";
+        else if (totalScore <= 45) statMsg = "Около 9-13% бисексуалов с гетеро-уклоном";
+        else if (totalScore <= 58) statMsg = "Приблизительно 7-10% людей — бисексуалы";
+        else if (totalScore <= 75) statMsg = "Около 6-9% бисексуалов с гомо-уклоном";
+        else if (totalScore <= 88) statMsg = "Примерно 4-7% — гомофлексибилы";
+        else statMsg = "Около 3-6% населения — исключительно гомосексуальные";
+        if (avgIntensity <= 1.2) statMsg += " · ~1-2% с низкой интенсивностью влечения.";
+
+        const shareText = `Результат теста ориентации: ${totalScore} баллов (0-100). Официально: ${officialShort}. Пол: ${gender}. #ТестОриентацииBEAR`;
+
+        function copyToClipboardSafe(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => showToast('Скопировано в буфер', 1400)).catch(() => fallbackCopy(text));
+            } else {
+                fallbackCopy(text);
+            }
+        }
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('Скопировано (резервный способ)', 1400);
+        }
+        function shareViaWhatsApp(text) { window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank'); }
+        function shareViaVK(text) { window.open(`https://vk.com/share.php?text=${encodeURIComponent(text)}`, '_blank'); }
+        function shareViaTelegram(text) { window.open(`https://t.me/share/url?url=&text=${encodeURIComponent(text)}`, '_blank'); }
+
+        const resultHtml = `
+            <div class="result-area">
+                <div class="result-card">
+                    <div class="result-score">Общий балл: ${totalScore} / 100</div>
+                    <div class="result-sub">Предрасположенность: ${escapeHtml(predispositionFull)}</div>
+                    <div class="official-tag">${escapeHtml(officialShort)}</div>
+                    <p><strong>Формулировка:</strong> ${escapeHtml(orientationLabel)}.</p>
+                    <div style="background:#f1f5f9; padding:0.6rem; border-radius:0.8rem; margin:0.8rem 0;">🔍 ${aceNote}</div>
+                    <div class="stat-line">📊 Статистическая оценка: ${statMsg}</div>
+                    <hr>
+                    <div class="share-buttons">
+                        <button id="shareWA" class="wa">WhatsApp</button>
+                        <button id="shareVK" class="vk">VK</button>
+                        <button id="shareTG" class="tg">Telegram</button>
+                        <button id="copyResult" class="copy">Копировать итог</button>
+                    </div>
+                    <div style="margin-top: 1rem; text-align:center;">
+                        <button id="restartBtn" style="background:#1f2a3e; color:white; border:none;">Пройти еще раз</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        mainDiv.innerHTML = resultHtml;
+
+        document.getElementById('shareWA')?.addEventListener('click', () => shareViaWhatsApp(shareText));
+        document.getElementById('shareVK')?.addEventListener('click', () => shareViaVK(shareText));
+        document.getElementById('shareTG')?.addEventListener('click', () => shareViaTelegram(shareText));
+        document.getElementById('copyResult')?.addEventListener('click', () => copyToClipboardSafe(shareText));
+        document.getElementById('restartBtn')?.addEventListener('click', () => {
+            userResponses = new Array(20).fill(null);
+            currentStep = 0;
+            testFinished = false;
+            renderQuestion();
+        });
+
+        if (navigator.share) {
+            const shareNative = document.createElement('button');
+            shareNative.textContent = 'Поделиться';
+            shareNative.className = 'share-native';
+            shareNative.style.background = '#1f2a3e';
+            shareNative.style.color = 'white';
+            shareNative.style.border = 'none';
+            shareNative.style.padding = '0.5rem 1rem';
+            shareNative.style.borderRadius = '2rem';
+            shareNative.style.cursor = 'pointer';
+            shareNative.addEventListener('click', () => {
+                navigator.share({
+                    title: 'Результат теста ориентации',
+                    text: shareText,
+                }).catch(e => showToast('Не удалось поделиться', 1500));
+            });
+            const shareContainer = document.querySelector('.share-buttons');
+            if (shareContainer) shareContainer.appendChild(shareNative);
+        }
+    }
+
+    renderQuestion();
+</script>
+</body>
+</html>
